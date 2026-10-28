@@ -1,0 +1,46 @@
+{
+  "weight": 32.8,
+  "assemble_time": 5400.0,
+  "prices_by_region": {
+    "EU": "13755.84",
+    "US": "14952.0",
+    "INTL": "14952.0",
+    "CA": "21381.36"
+  },
+  "price": "21381.36",
+  "platform_fees_by_region": {
+    "EU": "309.51",
+    "US": "336.42",
+    "INTL": "336.42",
+    "CA": "481.08"
+  },
+  "platform_fee": "481.08",
+  "bom": [
+    {
+      "part_number": "CE-CL-030-1500",
+      "quantity": 2,
+      "thumbnail_image_path": "https://assets.vention.io/parts/images/CE-CL-030-1500/thumb_machinemotion-ai.png",
+      "instance_parameters": {},
+      "shipment_delay": 0,
+      "unit_price": "7476.0",
+      "row_total": "14952.0",
+      "currency_code": "USD",
+      "assembly_time": 0.0,
+      "id": 3183,
+      "name": "MachineMotion AI",
+      "is_imported": false,
+      "is_custom": false,
+      "is_partner_part": false,
+      "is_robot": false,
+      "is_software": false,
+      "weight": 16.4,
+      "width": 337.0,
+      "height": 206.5,
+      "length": 470.0,
+      "status": "in_stock",
+      "url": "machinemotion-ai",
+      "image_path": "https://assets.vention.io/parts/images/CE-CL-030-1500/machinemotion-ai.png",
+      "hide_in_bom": false
+    }
+  ]
+}

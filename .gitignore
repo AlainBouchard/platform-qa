@@ -1,2 +1,21 @@
 .DS_Store
 tmp/
+.env
+.env.*
+!.env.local.example
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/allure-results/
+/allure-report/
+/playwright/.cache/
+/playwright/.auth/
+.auth/
+sdd/
+.cursor/
+
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
