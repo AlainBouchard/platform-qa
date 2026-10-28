@@ -5,6 +5,7 @@ Title: Platform QA for the Machine Builder challenge
 Date: 2026-10-28
 Flow: manual
 ---
+
 # PRD 0001: Platform QA for the Machine Builder challenge
 
 ## Problem statement
@@ -174,12 +175,12 @@ Node is `24.22.1`. pnpm is `11.15.0`.
 
 ## Success metrics
 
-| Metric | Definition | Baseline | Target | Window |
-| --- | --- | --- | --- | --- |
+| Metric                                                                                                                                                                                                                                         | Definition                                                                                   | Baseline             | Target               | Window               |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------- | -------------------- | -------------------- |
 | The challenge states no number. Success is a repository named platform-qa, a CI pipeline that runs it, and a black-box end-to-end check that two Machine Motion controllers cannot both be set up to automate the same Machine Builder design. | The three deliverables exist, and the two-controller scenario passes on Chromium and WebKit. | TBD — owner: product | TBD — owner: product | TBD — owner: product |
 
 ## Open questions
 
-| Question | Owner |
-| --- | --- |
+| Question                                                                                  | Owner   |
+| ----------------------------------------------------------------------------------------- | ------- |
 | The challenge states no number for how success is measured beyond the three deliverables. | product |
