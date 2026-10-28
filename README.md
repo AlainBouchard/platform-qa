@@ -40,7 +40,7 @@ Do not commit `.env.local`, `.auth/`, or `.playwright-cli/`. Those files can hol
 - `pnpm allure:report` builds `allure-report` from `allure-results`.
 - `pnpm allure:open` opens that report in a browser.
 
-Playwright writes `allure-results` on every run. New runs add files to that folder, so delete it when the report should cover one run only. CI also uploads `allure-report` and posts a summary on pull requests. See [Allure Report](https://allurereport.org/).
+Playwright writes `allure-results` on every run. New runs add files to that folder, so delete it when the report should cover one run only. CI uploads `allure-report`, publishes that run to GitHub Pages, and posts a summary on pull requests. The summary links to the page. See [Allure Report](https://allurereport.org/).
 
 ## Layout
 

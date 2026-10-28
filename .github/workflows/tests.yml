@@ -45,7 +45,7 @@ jobs:
     name: Playwright
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       actions: write
       checks: write
     outputs:
@@ -129,6 +129,16 @@ jobs:
           path: allure-report/
           retention-days: 14
 
+      - name: Publish Allure report
+        if: ${{ !cancelled() && steps.allure.outputs.generated == 'true' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: ${{ github.run_id }}
+          keep_files: true
+          enable_jekyll: false
+
   allure:
     name: Allure summary
     needs: test
@@ -150,3 +160,4 @@ jobs:
         with:
           report-directory: ./allure-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          remote-href: https://alainbouchard.github.io/platform-qa/${{ github.run_id }}/
