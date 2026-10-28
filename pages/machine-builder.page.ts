@@ -98,7 +98,9 @@ export class MachineBuilderPage {
 
   async searchFor(query: string): Promise<void> {
     await this.search.click();
+    await this.search.fill('');
     await this.search.fill(query);
+    await expect(this.search).toHaveValue(query);
   }
 
   controllerResults() {
@@ -109,7 +111,7 @@ export class MachineBuilderPage {
     const image = this.page
       .getByTestId(`part-browser-${partNumber}`)
       .getByRole('img');
-    await image.scrollIntoViewIfNeeded();
+    await this.scrollIntoPanel(image);
     await expect
       .poll(
         () =>
@@ -123,8 +125,21 @@ export class MachineBuilderPage {
         { timeout: 20_000 },
       )
       .toBe(true);
-    await this.dismissPartDetails(image);
-    await image.click();
+    await expect(async () => {
+      await this.dismissPartDetails(image);
+      await this.scrollIntoPanel(image);
+      const hittable = await image.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        if (rect.width < 2 || rect.height < 2) return false;
+        const hit = document.elementFromPoint(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2,
+        );
+        return hit === node || node.contains(hit);
+      });
+      if (!hittable) throw new Error('The part image is not clickable');
+      await image.click({ timeout: 5_000 });
+    }).toPass({ timeout: 30_000 });
 
     await waitForPartInsertionProgress(this.page, timeout);
 
@@ -155,6 +170,31 @@ export class MachineBuilderPage {
 
   async openConfiguration(): Promise<void> {
     await this.configurationTab.click();
+  }
+
+  private async scrollIntoPanel(target: Locator): Promise<void> {
+    await target.evaluate((node) => {
+      let parent = node.parentElement;
+      while (parent) {
+        const overflowY = getComputedStyle(parent).overflowY;
+        const scrolls =
+          (overflowY === 'auto' ||
+            overflowY === 'scroll' ||
+            overflowY === 'overlay') &&
+          parent.scrollHeight > parent.clientHeight + 1;
+        if (scrolls) {
+          const parentRect = parent.getBoundingClientRect();
+          const nodeRect = node.getBoundingClientRect();
+          parent.scrollTop +=
+            nodeRect.top -
+            parentRect.top -
+            (parent.clientHeight - nodeRect.height) / 2;
+          return;
+        }
+        parent = parent.parentElement;
+      }
+      node.scrollIntoView({ block: 'center', inline: 'nearest' });
+    });
   }
 
   private async dismissPartDetails(image: Locator): Promise<void> {
