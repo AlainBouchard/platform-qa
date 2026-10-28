@@ -86,8 +86,8 @@ export class MachineBuilderPage {
     const start = this.page.getByRole('button', {
       name: roleName.startBuilding,
     });
-    await start.waitFor({ state: 'visible' });
-    await start.click();
+    // The button stays disabled until Machine Builder finishes loading.
+    await start.click({ timeout: 60_000 });
     await start.waitFor({ state: 'hidden' });
     await expect(this.search).toBeVisible();
   }

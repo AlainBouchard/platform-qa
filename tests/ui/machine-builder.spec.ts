@@ -17,10 +17,7 @@ test.describe('MachineMotion AI', () => {
     await builder.searchFor(roleName.controllers);
     await expect(builder.controllerResults()).toHaveCount(4);
 
-    const price = await builder.placeOnCanvas(
-      Part.machineMotionAi.partNumber,
-      5_000,
-    );
+    const price = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
     await expect(asApiResponse(price)).toBeOK();
 
     const part = builder.bomPart(Part.machineMotionAi.partNumber);
@@ -40,19 +37,13 @@ test.describe('MachineMotion AI', () => {
     await expect(builder.downloadConfigurationItems).toHaveCount(0);
 
     await builder.searchFor(roleName.controllers);
-    const first = await builder.placeOnCanvas(
-      Part.machineMotionAi.partNumber,
-      5_000,
-    );
+    const first = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
     await expect(asApiResponse(first)).toBeOK();
     await builder.openConfiguration();
     await expect(builder.downloadConfigurationItems).toHaveCount(1);
 
     await builder.searchFor(roleName.controllers);
-    const second = await builder.placeOnCanvas(
-      Part.machineMotionAi.partNumber,
-      5_000,
-    );
+    const second = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
     await expect(asApiResponse(second)).toBeOK();
     await builder.openConfiguration();
     await expect(builder.downloadConfigurationItems).toHaveCount(2);

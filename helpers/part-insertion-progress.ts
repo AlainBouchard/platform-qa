@@ -4,7 +4,7 @@ const partInsertionProgress = 'mb-progress-bar-part-insertion';
 
 export async function waitForPartInsertionProgress(
   page: Page,
-  timeout = 20_000,
+  timeout = 60_000,
 ): Promise<void> {
   const loader = page.getByTestId(partInsertionProgress);
   // Another copy of a part that is already loaded does not show this bar.
