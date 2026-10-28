@@ -1,0 +1,163 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Playwright project
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - health
+          - setup
+          - api
+          - chromium
+          - webkit
+      locale:
+        description: Value passed to Playwright as VENTION_LOCALE
+        required: true
+        type: choice
+        default: en-CA
+        options:
+          - en-CA
+          - fr-CA
+      grep:
+        description: Text or regex passed to Playwright --grep
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Playwright
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      checks: write
+    outputs:
+      allure: ${{ steps.allure.outputs.generated }}
+    timeout-minutes: 60
+    env:
+      VENTION_URL: ${{ vars.VENTION_URL }}
+      VENTION_LOCALE: ${{ inputs.locale || 'en-CA' }}
+      VENTION_EMAIL: ${{ secrets.VENTION_EMAIL }}
+      VENTION_PASSWORD: ${{ secrets.VENTION_PASSWORD }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.15.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.22.1
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run tests
+        env:
+          PLAYWRIGHT_PROJECT: ${{ inputs.project }}
+          PLAYWRIGHT_GREP: ${{ inputs.grep }}
+        run: |
+          set -euo pipefail
+          args=(--reporter=html,github,allure-playwright)
+          if [[ -n "${PLAYWRIGHT_PROJECT}" && "${PLAYWRIGHT_PROJECT}" != "all" ]]; then
+            args+=(--project="${PLAYWRIGHT_PROJECT}")
+          fi
+          if [[ -n "${PLAYWRIGHT_GREP}" ]]; then
+            args+=(--grep="${PLAYWRIGHT_GREP}")
+          fi
+          pnpm exec playwright test "${args[@]}"
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Generate Allure report
+        id: allure
+        if: ${{ !cancelled() }}
+        run: |
+          if compgen -G "allure-results/*" > /dev/null; then
+            pnpm exec allure generate ./allure-results --clean -o ./allure-report
+            echo "generated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "generated=false" >> "$GITHUB_OUTPUT"
+            echo "No Allure results to publish."
+          fi
+
+      - name: Upload Allure report
+        if: ${{ !cancelled() && steps.allure.outputs.generated == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 14
+
+      - name: Publish Allure report
+        if: ${{ !cancelled() && steps.allure.outputs.generated == 'true' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: ${{ github.run_id }}
+          keep_files: true
+          enable_jekyll: false
+
+  allure:
+    name: Allure summary
+    needs: test
+    if: ${{ !cancelled() && github.event_name == 'pull_request' && needs.test.outputs.allure == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    steps:
+      - name: Download Allure report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      - name: Post Allure summary
+        uses: allure-framework/allure-action@v0
+        with:
+          report-directory: ./allure-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          remote-href: https://alainbouchard.github.io/platform-qa/${{ github.run_id }}/
