@@ -1,0 +1,55 @@
+{
+  "name": "vention-platform-qa",
+  "version": "1.0.0",
+  "description": "Enjoying Playwright with Vention Platform QA",
+  "scripts": {
+    "test": "playwright test",
+    "health": "playwright test --project=health",
+    "setup": "playwright test --project=setup --no-deps",
+    "api": "playwright test --project=api",
+    "ui": "playwright test --ui",
+    "chromium:en": "VENTION_LOCALE=en-CA playwright test --project=chromium",
+    "chromium:fr": "VENTION_LOCALE=fr-CA playwright test --project=chromium",
+    "webkit:en": "VENTION_LOCALE=en-CA playwright test --project=webkit",
+    "webkit:fr": "VENTION_LOCALE=fr-CA playwright test --project=webkit",
+    "allure:report": "allure generate ./allure-results --clean -o ./allure-report",
+    "allure:open": "allure open ./allure-report",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "audit": "pnpm audit",
+    "playwright-cli": "playwright-cli",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "abouchard@live.ca",
+  "license": "ISC",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.22.1",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.15.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/cli": "^0.1.22",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "allure": "^3.22.1",
+    "allure-playwright": "^3.14.0",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0"
+  }
+}
