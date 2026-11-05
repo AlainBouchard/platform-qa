@@ -1,10 +1,6 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
 import { siteUrl } from '../helpers/site-url';
 
-export function siteOrigin(): string {
-  return siteUrl();
-}
-
 export async function graphql<T>(
   request: APIRequestContext,
   query: string,
@@ -13,16 +9,17 @@ export async function graphql<T>(
   const response = await request.post(graphqlUrl(), {
     headers: {
       Accept: 'application/json',
-      Origin: siteOrigin(),
-      Referer: new URL('/dashboard', siteOrigin()).href,
+      Origin: siteUrl(),
+      Referer: new URL('/dashboard', siteUrl()).href,
     },
     data: { query, variables },
   });
   return readGraphql<T>(response);
 }
 
+// Assumption: GET /contact includes a CSRF token, and that token authorizes the signed-in requests.
 export async function csrfToken(request: APIRequestContext): Promise<string> {
-  const response = await request.get(new URL('/contact', siteOrigin()).href);
+  const response = await request.get(new URL('/contact', siteUrl()).href);
   const html = await response.text();
   const token = html.match(/name="csrf-token" content="([^"]+)"/)?.[1];
   if (!token) throw new Error('Vention did not return a CSRF token');
@@ -30,7 +27,7 @@ export async function csrfToken(request: APIRequestContext): Promise<string> {
 }
 
 function graphqlUrl(): string {
-  return new URL('/graphql', siteOrigin()).href;
+  return new URL('/graphql', siteUrl()).href;
 }
 
 async function readGraphql<T>(response: APIResponse): Promise<T> {

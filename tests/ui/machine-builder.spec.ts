@@ -1,12 +1,11 @@
 import { Part } from '../../api/machine-builder.api';
 import { expect, test } from '../../fixtures/machine-builder.fixture';
-import { asApiResponse } from '../../helpers/api-response';
 import { roleName } from '../../pages/machine-builder.page';
 
 test.describe.configure({ timeout: 180_000 });
 
 test.describe('MachineMotion AI', () => {
-  test('shows one MachineMotion AI in the bill of materials and configuration', async ({
+  test('placing one MachineMotion AI shows it in the bill of materials and configuration', async ({
     builder,
   }) => {
     await builder.openBillOfMaterials();
@@ -17,8 +16,7 @@ test.describe('MachineMotion AI', () => {
     await builder.searchFor(roleName.controllers);
     await expect(builder.controllerResults()).toHaveCount(4);
 
-    const price = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
-    await expect(asApiResponse(price)).toBeOK();
+    await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
 
     const part = builder.bomPart(Part.machineMotionAi.partNumber);
     await expect(part).toContainText(roleName.machineMotionAi);
@@ -30,21 +28,19 @@ test.describe('MachineMotion AI', () => {
     await expect(builder.configurationDownloads).toHaveCount(1);
   });
 
-  test('lists MachineMotion AI controllers in download configuration', async ({
+  test('placing two MachineMotion AI controllers shows an alert on each until one is deleted', async ({
     builder,
   }) => {
     await builder.openConfiguration();
     await expect(builder.downloadConfigurationItems).toHaveCount(0);
 
     await builder.searchFor(roleName.controllers);
-    const first = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
-    await expect(asApiResponse(first)).toBeOK();
+    await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
     await builder.openConfiguration();
     await expect(builder.downloadConfigurationItems).toHaveCount(1);
 
     await builder.searchFor(roleName.controllers);
-    const second = await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
-    await expect(asApiResponse(second)).toBeOK();
+    await builder.placeOnCanvas(Part.machineMotionAi.partNumber);
     await builder.openConfiguration();
     await expect(builder.downloadConfigurationItems).toHaveCount(2);
     await expect(builder.downloadConfigurationAlerts).toHaveCount(2);

@@ -51,8 +51,22 @@ Playwright writes `allure-results` on every run. New runs add files to that fold
 - `fixtures/design.fixture.ts` creates a design and deletes it on teardown. `fixtures/machine-builder.fixture.ts` opens Machine Builder for that design.
 - `pages/` holds page objects the UI tests use.
 - `tests/api/` holds API tests. `tests/ui/` holds browser tests.
-- `docs/` holds reference data, such as `docs/price.json`.
+- `docs/` holds the PRD, notes, and slide decks.
 
 ## Code style
 
 TypeScript uses ES modules. Prettier uses single quotes. ESLint uses the recommended JavaScript and TypeScript rules, with Prettier last so format rules stay off.
+
+## Roadblocks and issues
+
+I could not create an account with my personal email. An option would be to use a test user.
+
+Machine Builder had race conditions during automation. I tracked them down by running the tests in the Playwright UI (`pnpm ui`).
+
+## How AI was used
+
+The work was done in Cursor, with more than one model.
+
+AI drafted the PRD from my explorations. It then followed that PRD with spec-driven development and fixed bugs with `playwright-cli`. It did some technical research, and it built the three slide decks from my notes.
+
+I wrote about 80% of `docs/notes-and-questions.md`. I set the architecture described in the PRD. I debugged by hand (and I also debugged with `playwright-cli`).

@@ -1,12 +1,17 @@
 import { addParts, Part } from '../../api/machine-builder.api';
 import { expect, test } from '../../fixtures/design.fixture';
 
-test('create and delete a design', ({ design }) => {
+test('a disposable design has an id and a name that starts with QA disposable', ({
+  design,
+}) => {
   expect(design.id).toBeTruthy();
   expect(design.name).toMatch(/^QA disposable \d+$/);
 });
 
-test('adds catalog parts to a design', async ({ design, request }) => {
+test('adding 1 MachineMotion AI and 2 MachineMotion AI Pro lists those quantities on the bill of materials', async ({
+  design,
+  request,
+}) => {
   const price = await addParts(request, design.id, {
     machineMotionAi: 1,
     machineMotionAiPro: 2,
