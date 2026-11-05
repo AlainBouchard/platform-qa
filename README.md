@@ -4,16 +4,16 @@ Playwright tests for the Vention platform.
 
 ## Getting started
 
-Node 24 and pnpm 11, as set in `package.json`.
+Node 24.22.1 and pnpm 11.15.0, as set in `package.json`.
 
-Run `pnpm install`, then `pnpm exec playwright install`.
+Run `pnpm install --frozen-lockfile`, then `pnpm exec playwright install`.
 
 Copy `.env.local.example` to `.env.local` and set:
 
 - `VENTION_URL`
 - `VENTION_EMAIL`
 - `VENTION_PASSWORD`
-- `VENTION_LOCALE` (`en-CA` or `fr-CA`, default `en-CA`)
+- `VENTION_LOCALE` (`en-CA` or `fr-CA`). The code default is `en-CA` when the variable is unset. `.env.local.example` sets `fr-CA`.
 
 Do not commit `.env.local`, `.auth/`, or `.playwright-cli/`. Those files can hold credentials or session cookies.
 
@@ -23,10 +23,10 @@ Do not commit `.env.local`, `.auth/`, or `.playwright-cli/`. Those files can hol
 
 The suite runs in this order: health, then setup, then API, then UI.
 
-- Health calls `GET /api/health` and expects `{ "status": "ok" }`. Setup depends on it, so every project after health runs that check first.
-- Setup signs in and saves the session.
+- Health calls `GET /api/health` and expects `{ "status": "ok" }`. The setup project depends on health.
+- Setup signs in and saves the session. `pnpm test`, `pnpm api`, and the browser commands run health first. `pnpm setup` passes `--no-deps`, so it signs in without running health.
 - API tests depend on setup. The health spec stays in the `health` project, so the API project does not run it again.
-- UI tests are Chromium and WebKit. They depend on the API tests, so health, setup, and API run first. `VENTION_LOCALE` selects `en-CA` or `fr-CA` and defaults to `en-CA`.
+- UI tests are Chromium and WebKit. They depend on the API tests, so health, setup, and API run first. `VENTION_LOCALE` selects `en-CA` or `fr-CA` and defaults to `en-CA` when it is unset.
 
 ## Commands
 
@@ -34,9 +34,9 @@ The suite runs in this order: health, then setup, then API, then UI.
 - `pnpm health` runs the health check only.
 - `pnpm setup` signs in only.
 - `pnpm api` runs the API tests and their dependencies.
-- `pnpm ui` opens the Playwright UI. The projects there still run setup, then API, then Chromium and WebKit.
-- `pnpm chromium:en` runs Chromium in Canada English. `pnpm chromium:fr` runs it in Canada French.
-- `pnpm webkit:en` runs WebKit in Canada English. `pnpm webkit:fr` runs it in Canada French.
+- `pnpm ui` opens the Playwright UI for these projects. Running a browser project there still runs health, setup, and API first.
+- `pnpm chromium:en` runs Chromium in Canada English, after health, setup, and API. `pnpm chromium:fr` runs it in Canada French.
+- `pnpm webkit:en` runs WebKit in Canada English, after health, setup, and API. `pnpm webkit:fr` runs it in Canada French.
 - `pnpm lint` runs ESLint.
 - `pnpm format` runs Prettier.
 - `pnpm allure:report` builds `allure-report` from `allure-results`.
@@ -51,11 +51,11 @@ Playwright writes `allure-results` on every run. New runs add files to that fold
 - `fixtures/design.fixture.ts` creates a design and deletes it on teardown. `fixtures/machine-builder.fixture.ts` opens Machine Builder for that design.
 - `pages/` holds page objects the UI tests use.
 - `tests/api/` holds API tests. `tests/ui/` holds browser tests.
-- `docs/` holds the PRD, notes, and slide decks.
+- `docs/` holds the PRD, the notes, the challenge PDF, and the slide decks.
 
 ## Code style
 
-TypeScript uses ES modules. Prettier uses single quotes. ESLint uses the recommended JavaScript and TypeScript rules, with Prettier last so format rules stay off.
+TypeScript uses ES modules. Prettier uses single quotes. ESLint uses the recommended JavaScript rules and the recommended type-checked TypeScript rules, with Prettier last so format rules stay off.
 
 ## Roadblocks and issues
 

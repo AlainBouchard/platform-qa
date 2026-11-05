@@ -9,9 +9,6 @@ type LocaleId = (typeof localeIds)[number];
 
 const locale = localeFromEnv();
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
