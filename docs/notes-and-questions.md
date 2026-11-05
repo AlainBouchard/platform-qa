@@ -74,21 +74,22 @@ Why is the outcome the test is meant to buy. Each row below is a reason you can 
 
 #### Test Flow : shift left, shift right
 
-what? | who? | where? | when? | why?
-unit test | dev | local, CI | pre-merge, post-merge | fail fast, stop regression
-component tests | dev | local, CI | pre-merge, post-merge | fail fast, stop regression
-integration | dev, qa | local, CI | pre-merge, post-merge | fail fast, stop regression, keep contracts honest
-contract | dev | local, CI | pre-merge, post-merge | keep contracts honest
-web vitals (lab) | dev, qa | local, CI | pre-merge | fail fast, prove the limits
-ui/e2e | qa | CI, cluster | post-merge, pre-deployment | stop regression, limit blast radius
-smoke | qa, dev | CI, cluster | pre-deployment | decide go / no-go, limit blast radius
-system integration | dev, qa | cluster | pre-deployment | keep contracts honest, limit blast radius
-user journey | qa | cluster | pre-deployment | protect the user, limit blast radius
-system | qa, sre | cluster | pre-deployment | prove the limits, decide go / no-go
-pen | security, sre | cluster | pre-deployment, post-deployment | prove the limits, protect the user, decide go / no-go
-smoke | qa, dev | cluster | post-deployment | decide go / no-go, limit blast radius
-synthetic traffic | dev, qa | cluster | post-deployment | watch production
-web vitals (field) | dev, qa | cluster | post-deployment | watch production
+| What | Who | Where | When | Why |
+| --- | --- | --- | --- | --- |
+| unit test | dev | local, CI | pre-merge, post-merge | fail fast, stop regression |
+| component tests | dev | local, CI | pre-merge, post-merge | fail fast, stop regression |
+| integration | dev, qa | local, CI | pre-merge, post-merge | fail fast, stop regression, keep contracts honest |
+| contract | dev | local, CI | pre-merge, post-merge | keep contracts honest |
+| web vitals (lab) | dev, qa | local, CI | pre-merge | fail fast, prove the limits |
+| ui/e2e | qa | CI, cluster | post-merge, pre-deployment | stop regression, limit blast radius |
+| smoke | qa, dev | CI, cluster | pre-deployment | decide go / no-go, limit blast radius |
+| system integration | dev, qa | cluster | pre-deployment | keep contracts honest, limit blast radius |
+| user journey | qa | cluster | pre-deployment | protect the user, limit blast radius |
+| system | qa, sre | cluster | pre-deployment | prove the limits, decide go / no-go |
+| pen | security, sre | cluster | pre-deployment, post-deployment | prove the limits, protect the user, decide go / no-go |
+| smoke | qa, dev | cluster | post-deployment | decide go / no-go, limit blast radius |
+| synthetic traffic | dev, qa | cluster | post-deployment | watch production |
+| web vitals (field) | dev, qa | cluster | post-deployment | watch production |
 
 ## Test Strategy for Edge Software (firmware)
 
@@ -161,22 +162,23 @@ Why is the outcome the test is meant to buy. The cloud list is the base. This se
 
 #### Test Flow : shift left, shift right
 
-what? | who? | where? | when? | why?
-unit test | dev | bench, CI | pre-merge, post-merge | fail fast, stop regression
-component tests | dev | bench, CI | pre-merge, post-merge | fail fast, stop regression
-integration | dev, qa | bench, CI | pre-merge, post-merge | fail fast, stop regression, keep contracts honest
-contract | dev | bench, CI | pre-merge, post-merge | keep contracts honest
-configuration handoff | dev, qa | bench, CI | pre-merge, post-merge | keep contracts honest
-certificate | dev, qa | bench, CI | pre-merge, post-merge | keep contracts honest, protect the user
-emulator | dev, qa | emulator | pre-merge, post-merge | fail fast
-hardware-in-the-loop | dev, qa, lab | lab | release candidate | prove the limits, protect the user, limit blast radius
-ethercat fault injection | dev, qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go
-soak (ethercat link loss) | qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go
-soak (memory leak) | qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go
-smoke | qa, dev, delivery | lab | release candidate | decide go / no-go, limit blast radius
-staged over-the-air update | dev, qa, lab | lab | release candidate | recover the update, decide go / no-go, limit blast radius
-old firmware (mmai 3.x) | qa, lab | lab | release candidate | carry old firmware, stop regression
-fleet health | sre | factory (watch only) | after ship, once reporting exists | watch production, show quality
+| What | Who | Where | When | Why |
+| --- | --- | --- | --- | --- |
+| unit test | dev | bench, CI | pre-merge, post-merge | fail fast, stop regression |
+| component tests | dev | bench, CI | pre-merge, post-merge | fail fast, stop regression |
+| integration | dev, qa | bench, CI | pre-merge, post-merge | fail fast, stop regression, keep contracts honest |
+| contract | dev | bench, CI | pre-merge, post-merge | keep contracts honest |
+| configuration handoff | dev, qa | bench, CI | pre-merge, post-merge | keep contracts honest |
+| certificate | dev, qa | bench, CI | pre-merge, post-merge | keep contracts honest, protect the user |
+| emulator | dev, qa | emulator | pre-merge, post-merge | fail fast |
+| hardware-in-the-loop | dev, qa, lab | lab | release candidate | prove the limits, protect the user, limit blast radius |
+| ethercat fault injection | dev, qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go |
+| soak (ethercat link loss) | qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go |
+| soak (memory leak) | qa, lab | lab | release candidate | prove the limits, protect the user, decide go / no-go |
+| smoke | qa, dev, delivery | lab | release candidate | decide go / no-go, limit blast radius |
+| staged over-the-air update | dev, qa, lab | lab | release candidate | recover the update, decide go / no-go, limit blast radius |
+| old firmware (mmai 3.x) | qa, lab | lab | release candidate | carry old firmware, stop regression |
+| fleet health | sre | factory (watch only) | after ship, once reporting exists | watch production, show quality |
 
 ### References
 
