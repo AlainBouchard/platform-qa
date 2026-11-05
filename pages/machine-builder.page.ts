@@ -7,8 +7,9 @@ import {
 import { waitForPartInsertionProgress } from '../helpers/part-insertion-progress';
 
 const controllerResults = /part-browser-CE-CL-/;
-export const designPath = '/machine-builder/{designId}';
+const designPath = '/machine-builder/{designId}';
 
+// Assumption: Machine Builder labels stay English in fr-CA.
 export const roleName = {
   search: 'Search for Parts...',
   startBuilding: 'Start building now',

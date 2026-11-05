@@ -11,6 +11,7 @@ const ssoNotice =
 const verificationNotice =
   'Enter the verification code sent to your phone number:';
 
+// Assumption: a real project signs in as a test user, with no SSO, no 2FA, and no other extra sign-in step.
 export async function loginWithBrowser(page: Page): Promise<void> {
   const email = requiredEnv('VENTION_EMAIL');
   const password = requiredEnv('VENTION_PASSWORD');
@@ -101,6 +102,7 @@ export async function disableInstructorHints(
   }
 }
 
+// Assumption: the only consent dialog is Cookiebot, and Decline is enough.
 async function dismissCookies(page: Page): Promise<void> {
   const cookies = page.locator('#CybotCookiebotDialog');
   if (await cookies.isVisible({ timeout: 8000 }).catch(() => false)) {

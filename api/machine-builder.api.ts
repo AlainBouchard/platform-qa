@@ -1,5 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
-import { csrfToken, graphql, siteOrigin } from './client.api';
+import { siteUrl } from '../helpers/site-url';
+import { csrfToken, graphql } from './client.api';
 
 export type DesignInput = {
   name?: string;
@@ -126,8 +127,8 @@ export async function addParts(
   const response = await request.post(priceUrl(designId), {
     headers: {
       Accept: 'application/json',
-      Origin: siteOrigin(),
-      Referer: new URL(`/machine-builder/${designId}`, siteOrigin()).href,
+      Origin: siteUrl(),
+      Referer: new URL(`/machine-builder/${designId}`, siteUrl()).href,
       'X-CSRF-Token': await csrfToken(request),
     },
     data: {
@@ -172,7 +173,7 @@ function partQuantities(
 }
 
 function priceUrl(designId: string): string {
-  return new URL(`/api/v3/designs/${designId}/price`, siteOrigin()).href;
+  return new URL(`/api/v3/designs/${designId}/price`, siteUrl()).href;
 }
 
 function designResult(
