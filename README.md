@@ -2,6 +2,23 @@
 
 Playwright tests for the Vention platform.
 
+## Getting started
+
+Node 24 and pnpm 11, as set in `package.json`.
+
+Run `pnpm install`, then `pnpm exec playwright install`.
+
+Copy `.env.local.example` to `.env.local` and set:
+
+- `VENTION_URL`
+- `VENTION_EMAIL`
+- `VENTION_PASSWORD`
+- `VENTION_LOCALE` (`en-CA` or `fr-CA`, default `en-CA`)
+
+Do not commit `.env.local`, `.auth/`, or `.playwright-cli/`. Those files can hold credentials or session cookies.
+
+`pnpm test` runs the suite.
+
 ## Test sequence
 
 The suite runs in this order: health, then setup, then API, then UI.
@@ -10,21 +27,6 @@ The suite runs in this order: health, then setup, then API, then UI.
 - Setup signs in and saves the session.
 - API tests depend on setup. The health spec stays in the `health` project, so the API project does not run it again.
 - UI tests are Chromium and WebKit. They depend on the API tests, so health, setup, and API run first. `VENTION_LOCALE` selects `en-CA` or `fr-CA` and defaults to `en-CA`.
-
-## Requirements
-
-Node 24 and pnpm 11, as set in `package.json`.
-
-## Setup
-
-Put these variables in `.env.local`; make a copy from `.env.local.example`:
-
-- `VENTION_URL`
-- `VENTION_EMAIL`
-- `VENTION_PASSWORD`
-- `VENTION_LOCALE` (`en-CA` or `fr-CA`, default `en-CA`)
-
-Do not commit `.env.local`, `.auth/`, or `.playwright-cli/`. Those files can hold credentials or session cookies.
 
 ## Commands
 

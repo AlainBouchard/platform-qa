@@ -1,3 +1,7 @@
 # Allure 3.22.1 pins dompurify 3.4.16. 3.4.17 includes the audit fixes.
+# ESLint 10 and Allure 3.22.1 still request minimatch 10 and glob 13.
+# 11.0.4 and 14.0.3 are the patched releases for the current audit.
 overrides:
   '@allurereport/web-commons>dompurify': '3.4.17'
+  minimatch: '11.0.4'
+  glob: '14.0.3'

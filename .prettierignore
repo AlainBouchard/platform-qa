@@ -6,3 +6,6 @@ blob-report
 allure-results
 allure-report
 tmp
+docs/notes-and-questions.md
+.husky/pre-commit
+.husky/pre-push

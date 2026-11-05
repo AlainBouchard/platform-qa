@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vention — Shift left, shift right</title>
+    <style>
+      :root {
+        --navy: #1c344f;
+        --navy-dark: #15283c;
+        --blue: #197ce0;
+        --ink: #0f172a;
+        --muted: #475569;
+        --line: #d5deea;
+        --paper: #f7f9fc;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--navy-dark);
+      }
+      body {
+        font-family: 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+        color: var(--ink);
+        overflow: hidden;
+      }
+      .stage {
+        position: absolute;
+        width: 1600px;
+        height: 900px;
+        transform-origin: top left;
+        background: var(--paper);
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        padding: 48px 64px 72px;
+        background: var(--paper);
+        color: var(--ink);
+        overflow: hidden;
+      }
+      .slide.is-active {
+        display: flex;
+      }
+      .slide.dark {
+        background: var(--navy);
+        color: var(--white);
+      }
+
+      .logo {
+        display: inline-block;
+        width: 168px;
+        height: 18px;
+        background: currentColor;
+        -webkit-mask: url('data:image/svg+xml,%3Csvg%20width%3D%22184%22%20height%3D%2220%22%20viewBox%3D%220%200%20184%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cg%20clip-path%3D%22url%28%23clip0_992_23593%29%22%3E%0A%3Cpath%20d%3D%22M25.2125%204.84307C24.4172%204.84307%2023.7716%204.19233%2023.7716%203.38969C23.7716%202.58708%2024.4172%201.93683%2025.2125%201.93683C26.0078%201.93683%2026.6534%202.58708%2026.6534%203.38969C26.6534%204.19233%2026.0083%204.84307%2025.2125%204.84307ZM14.2593%2017.3719C13.4635%2017.3719%2012.8184%2016.7217%2012.8184%2015.9191C12.8184%2015.1164%2013.4635%2014.4662%2014.2593%2014.4662C15.0551%2014.4662%2015.6997%2015.1169%2015.6997%2015.9191C15.6997%2016.7212%2015.0546%2017.3719%2014.2593%2017.3719ZM3.43895%204.84307C2.64312%204.84307%201.99803%204.19233%201.99803%203.38969C1.99803%202.58708%202.64312%201.93683%203.43895%201.93683C4.23478%201.93683%204.8794%202.58708%204.8794%203.38969C4.8794%204.19233%204.2343%204.84307%203.43895%204.84307ZM27.4288%200.807593L27.3818%200.768875C26.7868%200.272506%2026.0352%200%2025.2646%200C24.2689%200%2023.3352%200.443258%2022.701%201.2161L14.3183%2011.4398L5.93455%201.2161C5.30087%200.442762%204.36669%200%203.37104%200C2.6005%200%201.84878%200.273003%201.25426%200.768378L1.20617%200.808586C0.521901%201.37941%200.0989502%202.18502%200.0151523%203.0765C-0.0686454%203.96798%200.197125%204.8391%200.762885%205.52954L11.6139%2018.7622C12.2476%2019.5351%2013.1818%2019.9783%2014.1775%2019.9783C14.2241%2019.9783%2014.2702%2019.9739%2014.3163%2019.9719C14.3634%2019.9739%2014.4105%2019.9783%2014.4586%2019.9783C15.4533%2019.9783%2016.3879%2019.5351%2017.0216%2018.7622L27.8721%205.52954C29.0404%204.10496%2028.8417%201.98746%2027.4288%200.808089%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M39.0572%202.58734H41.9398C42.2508%202.58734%2042.5052%202.65486%2042.703%202.79036C42.901%202.92588%2043.0423%203.10555%2043.1271%203.32893L46.116%2011.2539C46.2504%2011.5994%2046.3863%2011.9757%2046.524%2012.3817C46.662%2012.7882%2046.7907%2013.2146%2046.9108%2013.6618C47.0094%2013.2146%2047.1244%2012.7877%2047.2555%2012.3817C47.3858%2011.9752%2047.5153%2011.5994%2047.6423%2011.2539L50.6097%203.32893C50.6802%203.13931%2050.8179%202.96806%2051.0233%202.81568C51.2282%202.6633%2051.4791%202.58734%2051.776%202.58734H54.6801L48.4905%2017.391H45.2474L39.0572%202.58734Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M74.6043%202.58759V5.22925H68.548V8.68349H73.1866V11.2239H68.548V14.7496H74.6043V17.3908H65.1039V2.58759H74.6043Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M87.2268%202.60843C87.3287%202.62231%2087.4205%202.64715%2087.5025%202.68487C87.5842%202.72208%2087.6627%202.77472%2087.7375%202.84221C87.8124%202.91022%2087.8977%203.00155%2087.9932%203.1162L95.0671%2012.0067C95.0398%2011.7223%2095.0193%2011.4463%2095.006%2011.1782C94.9922%2010.9107%2094.9851%2010.6585%2094.9851%2010.4213V2.58758H98.0318V17.3913H96.2321C95.9664%2017.3913%2095.7413%2017.3506%2095.5574%2017.2692C95.3734%2017.1878%2095.1959%2017.0389%2095.026%2016.822L88.0032%208.00295C88.0237%208.26009%2088.0405%208.51272%2088.0543%208.75943C88.0681%209.00661%2088.0745%209.23891%2088.0745%209.45533V17.3908H85.0281V2.5871H86.8479C86.9976%202.5871%2087.1236%202.59403%2087.2263%202.60743%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M120.614%202.58759V5.31065H116.309V17.3908H112.76V5.31065H108.456V2.58759H120.614Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M131.038%2017.3724H134.508V2.60596H131.038V17.3724Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M156.981%209.98423C156.981%209.22825%20156.885%208.54723%20156.693%207.94168C156.5%207.33659%20156.223%206.82334%20155.862%206.40342C155.501%205.98349%20155.059%205.66135%20154.536%205.43748C154.014%205.21362%20153.419%205.10145%20152.751%205.10145C152.084%205.10145%20151.478%205.21362%20150.952%205.43748C150.425%205.66135%20149.982%205.98349%20149.621%206.40342C149.26%206.82385%20148.983%207.33659%20148.791%207.94168C148.598%208.54723%20148.502%209.22825%20148.502%209.98423C148.502%2010.7402%20148.598%2011.4316%20148.791%2012.0372C148.983%2012.6428%20149.26%2013.1555%20149.621%2013.5755C149.982%2013.9954%20150.425%2014.316%20150.952%2014.5359C151.478%2014.7563%20152.077%2014.867%20152.751%2014.867C153.426%2014.867%20154.014%2014.7568%20154.536%2014.5359C155.059%2014.3155%20155.501%2013.9954%20155.862%2013.5755C156.223%2013.1555%20156.5%2012.6428%20156.693%2012.0372C156.885%2011.4316%20156.981%2010.7476%20156.981%209.98423ZM160.551%209.98423C160.551%2011.0906%20160.363%2012.1196%20159.988%2013.0711C159.613%2014.0232%20159.086%2014.8511%20158.405%2015.5545C157.724%2016.2578%20156.904%2016.8093%20155.944%2017.2079C154.985%2017.607%20153.921%2017.8065%20152.751%2017.8065C151.582%2017.8065%20150.516%2017.607%20149.553%2017.2079C148.59%2016.8088%20147.767%2016.2578%20147.083%2015.5545C146.398%2014.8511%20145.869%2014.0232%20145.494%2013.0711C145.12%2012.1191%20144.932%2011.0901%20144.932%209.98423C144.932%208.8783%20145.12%207.84935%20145.494%206.8973C145.869%205.94526%20146.399%205.11932%20147.083%204.41943C147.767%203.71907%20148.59%203.17007%20149.553%202.7705C150.516%202.37141%20151.582%202.17188%20152.751%202.17188C153.921%202.17188%20154.985%202.37291%20155.944%202.77595C156.904%203.17851%20157.724%203.72948%20158.405%204.42935C159.086%205.12973%20159.613%205.95569%20159.988%206.90774C160.363%207.85976%20160.551%208.88526%20160.551%209.98423Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M173.173%202.62601C173.276%202.63941%20173.368%202.66473%20173.45%202.70197C173.532%202.73918%20173.61%202.7913%20173.686%202.85882C173.76%202.92632%20173.846%203.01765%20173.942%203.1323L181.022%2012.0004C180.995%2011.7165%20180.974%2011.4415%20180.961%2011.1745C180.947%2010.9079%20180.94%2010.6558%20180.94%2010.4195V2.60565H183.99V17.3721H182.189C181.923%2017.3721%20181.698%2017.3314%20181.514%2017.2505C181.33%2017.1696%20181.152%2017.0207%20180.981%2016.8048L173.952%208.00813C173.972%208.26476%20173.989%208.51642%20174.003%208.76312C174.017%209.00982%20174.023%209.24113%20174.023%209.45754V17.3726H170.974V2.60616H172.796C172.946%202.60616%20173.072%202.61312%20173.174%202.62652%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fg%3E%0A%3Cdefs%3E%0A%3CclipPath%20id%3D%22clip0_992_23593%22%3E%0A%3Crect%20width%3D%22184%22%20height%3D%2220%22%20fill%3D%22white%22%2F%3E%0A%3C%2FclipPath%3E%0A%3C%2Fdefs%3E%0A%3C%2Fsvg%3E%0A')
+          center / contain no-repeat;
+        mask: url('data:image/svg+xml,%3Csvg%20width%3D%22184%22%20height%3D%2220%22%20viewBox%3D%220%200%20184%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cg%20clip-path%3D%22url%28%23clip0_992_23593%29%22%3E%0A%3Cpath%20d%3D%22M25.2125%204.84307C24.4172%204.84307%2023.7716%204.19233%2023.7716%203.38969C23.7716%202.58708%2024.4172%201.93683%2025.2125%201.93683C26.0078%201.93683%2026.6534%202.58708%2026.6534%203.38969C26.6534%204.19233%2026.0083%204.84307%2025.2125%204.84307ZM14.2593%2017.3719C13.4635%2017.3719%2012.8184%2016.7217%2012.8184%2015.9191C12.8184%2015.1164%2013.4635%2014.4662%2014.2593%2014.4662C15.0551%2014.4662%2015.6997%2015.1169%2015.6997%2015.9191C15.6997%2016.7212%2015.0546%2017.3719%2014.2593%2017.3719ZM3.43895%204.84307C2.64312%204.84307%201.99803%204.19233%201.99803%203.38969C1.99803%202.58708%202.64312%201.93683%203.43895%201.93683C4.23478%201.93683%204.8794%202.58708%204.8794%203.38969C4.8794%204.19233%204.2343%204.84307%203.43895%204.84307ZM27.4288%200.807593L27.3818%200.768875C26.7868%200.272506%2026.0352%200%2025.2646%200C24.2689%200%2023.3352%200.443258%2022.701%201.2161L14.3183%2011.4398L5.93455%201.2161C5.30087%200.442762%204.36669%200%203.37104%200C2.6005%200%201.84878%200.273003%201.25426%200.768378L1.20617%200.808586C0.521901%201.37941%200.0989502%202.18502%200.0151523%203.0765C-0.0686454%203.96798%200.197125%204.8391%200.762885%205.52954L11.6139%2018.7622C12.2476%2019.5351%2013.1818%2019.9783%2014.1775%2019.9783C14.2241%2019.9783%2014.2702%2019.9739%2014.3163%2019.9719C14.3634%2019.9739%2014.4105%2019.9783%2014.4586%2019.9783C15.4533%2019.9783%2016.3879%2019.5351%2017.0216%2018.7622L27.8721%205.52954C29.0404%204.10496%2028.8417%201.98746%2027.4288%200.808089%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M39.0572%202.58734H41.9398C42.2508%202.58734%2042.5052%202.65486%2042.703%202.79036C42.901%202.92588%2043.0423%203.10555%2043.1271%203.32893L46.116%2011.2539C46.2504%2011.5994%2046.3863%2011.9757%2046.524%2012.3817C46.662%2012.7882%2046.7907%2013.2146%2046.9108%2013.6618C47.0094%2013.2146%2047.1244%2012.7877%2047.2555%2012.3817C47.3858%2011.9752%2047.5153%2011.5994%2047.6423%2011.2539L50.6097%203.32893C50.6802%203.13931%2050.8179%202.96806%2051.0233%202.81568C51.2282%202.6633%2051.4791%202.58734%2051.776%202.58734H54.6801L48.4905%2017.391H45.2474L39.0572%202.58734Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M74.6043%202.58759V5.22925H68.548V8.68349H73.1866V11.2239H68.548V14.7496H74.6043V17.3908H65.1039V2.58759H74.6043Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M87.2268%202.60843C87.3287%202.62231%2087.4205%202.64715%2087.5025%202.68487C87.5842%202.72208%2087.6627%202.77472%2087.7375%202.84221C87.8124%202.91022%2087.8977%203.00155%2087.9932%203.1162L95.0671%2012.0067C95.0398%2011.7223%2095.0193%2011.4463%2095.006%2011.1782C94.9922%2010.9107%2094.9851%2010.6585%2094.9851%2010.4213V2.58758H98.0318V17.3913H96.2321C95.9664%2017.3913%2095.7413%2017.3506%2095.5574%2017.2692C95.3734%2017.1878%2095.1959%2017.0389%2095.026%2016.822L88.0032%208.00295C88.0237%208.26009%2088.0405%208.51272%2088.0543%208.75943C88.0681%209.00661%2088.0745%209.23891%2088.0745%209.45533V17.3908H85.0281V2.5871H86.8479C86.9976%202.5871%2087.1236%202.59403%2087.2263%202.60743%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M120.614%202.58759V5.31065H116.309V17.3908H112.76V5.31065H108.456V2.58759H120.614Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M131.038%2017.3724H134.508V2.60596H131.038V17.3724Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M156.981%209.98423C156.981%209.22825%20156.885%208.54723%20156.693%207.94168C156.5%207.33659%20156.223%206.82334%20155.862%206.40342C155.501%205.98349%20155.059%205.66135%20154.536%205.43748C154.014%205.21362%20153.419%205.10145%20152.751%205.10145C152.084%205.10145%20151.478%205.21362%20150.952%205.43748C150.425%205.66135%20149.982%205.98349%20149.621%206.40342C149.26%206.82385%20148.983%207.33659%20148.791%207.94168C148.598%208.54723%20148.502%209.22825%20148.502%209.98423C148.502%2010.7402%20148.598%2011.4316%20148.791%2012.0372C148.983%2012.6428%20149.26%2013.1555%20149.621%2013.5755C149.982%2013.9954%20150.425%2014.316%20150.952%2014.5359C151.478%2014.7563%20152.077%2014.867%20152.751%2014.867C153.426%2014.867%20154.014%2014.7568%20154.536%2014.5359C155.059%2014.3155%20155.501%2013.9954%20155.862%2013.5755C156.223%2013.1555%20156.5%2012.6428%20156.693%2012.0372C156.885%2011.4316%20156.981%2010.7476%20156.981%209.98423ZM160.551%209.98423C160.551%2011.0906%20160.363%2012.1196%20159.988%2013.0711C159.613%2014.0232%20159.086%2014.8511%20158.405%2015.5545C157.724%2016.2578%20156.904%2016.8093%20155.944%2017.2079C154.985%2017.607%20153.921%2017.8065%20152.751%2017.8065C151.582%2017.8065%20150.516%2017.607%20149.553%2017.2079C148.59%2016.8088%20147.767%2016.2578%20147.083%2015.5545C146.398%2014.8511%20145.869%2014.0232%20145.494%2013.0711C145.12%2012.1191%20144.932%2011.0901%20144.932%209.98423C144.932%208.8783%20145.12%207.84935%20145.494%206.8973C145.869%205.94526%20146.399%205.11932%20147.083%204.41943C147.767%203.71907%20148.59%203.17007%20149.553%202.7705C150.516%202.37141%20151.582%202.17188%20152.751%202.17188C153.921%202.17188%20154.985%202.37291%20155.944%202.77595C156.904%203.17851%20157.724%203.72948%20158.405%204.42935C159.086%205.12973%20159.613%205.95569%20159.988%206.90774C160.363%207.85976%20160.551%208.88526%20160.551%209.98423Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M173.173%202.62601C173.276%202.63941%20173.368%202.66473%20173.45%202.70197C173.532%202.73918%20173.61%202.7913%20173.686%202.85882C173.76%202.92632%20173.846%203.01765%20173.942%203.1323L181.022%2012.0004C180.995%2011.7165%20180.974%2011.4415%20180.961%2011.1745C180.947%2010.9079%20180.94%2010.6558%20180.94%2010.4195V2.60565H183.99V17.3721H182.189C181.923%2017.3721%20181.698%2017.3314%20181.514%2017.2505C181.33%2017.1696%20181.152%2017.0207%20180.981%2016.8048L173.952%208.00813C173.972%208.26476%20173.989%208.51642%20174.003%208.76312C174.017%209.00982%20174.023%209.24113%20174.023%209.45754V17.3726H170.974V2.60616H172.796C172.946%202.60616%20173.072%202.61312%20173.174%202.62652%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fg%3E%0A%3Cdefs%3E%0A%3CclipPath%20id%3D%22clip0_992_23593%22%3E%0A%3Crect%20width%3D%22184%22%20height%3D%2220%22%20fill%3D%22white%22%2F%3E%0A%3C%2FclipPath%3E%0A%3C%2Fdefs%3E%0A%3C%2Fsvg%3E%0A')
+          center / contain no-repeat;
+      }
+      .logo.lg {
+        width: 230px;
+        height: 25px;
+      }
+
+      .kicker {
+        margin: 0 0 12px;
+        color: var(--blue);
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .dark .kicker {
+        color: #9cc7f5;
+      }
+      h1 {
+        margin: 0;
+        font-size: 64px;
+        line-height: 1.05;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+      h2 {
+        margin: 0 0 8px;
+        font-size: 40px;
+        line-height: 1.1;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+      .lead {
+        margin: 16px 0 0;
+        max-width: 980px;
+        font-size: 28px;
+        line-height: 1.35;
+        color: #d5e4f4;
+        font-weight: 500;
+      }
+      .sub {
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 18px;
+        font-weight: 500;
+      }
+      .grow {
+        flex: 1;
+        min-height: 0;
+      }
+      .foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .dark .foot {
+        color: #b7c9dc;
+      }
+      .foot .count {
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.04em;
+      }
+
+      .line {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 22px;
+        height: 100%;
+        position: relative;
+      }
+      .line::before {
+        content: '';
+        position: absolute;
+        top: 18px;
+        left: 6%;
+        right: 6%;
+        height: 2px;
+        background: #c5dff6;
+      }
+      .col {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 18px 14px;
+      }
+      .shift {
+        align-self: flex-start;
+        margin: 0 0 8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--paper);
+        color: var(--blue);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .col.right .shift {
+        color: var(--navy);
+        background: #e7f1fc;
+      }
+      .when {
+        margin: 0 0 12px;
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 650;
+      }
+      .rows {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .rows li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+        padding: 7px 0;
+        border-top: 1px solid var(--line);
+      }
+      .what {
+        font-size: 18px;
+        font-weight: 650;
+        line-height: 1.25;
+      }
+      .what small {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .who {
+        flex: 0 0 auto;
+        color: var(--blue);
+        font-size: 15px;
+        font-weight: 700;
+        text-align: right;
+      }
+      .col.right {
+        background: var(--navy);
+        border-color: var(--navy);
+        color: white;
+      }
+      .col.right .rows li {
+        border-top-color: rgba(255, 255, 255, 0.16);
+      }
+      .col.right .what small {
+        color: #b7c9dc;
+      }
+      .col.right .who {
+        color: #9cc7f5;
+      }
+      .col.solo .rows {
+        margin-top: 8px;
+      }
+
+      .pager {
+        position: absolute;
+        z-index: 5;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 14px;
+      }
+      .pager button {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: var(--navy);
+        color: #fff;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+      .pager button svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
+      .pager button:hover:not(:disabled) {
+        background: var(--blue);
+      }
+      .pager button:disabled {
+        opacity: 0.28;
+        cursor: default;
+      }
+      .pager button:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 3px;
+      }
+      .pager.on-dark button {
+        background: rgba(255, 255, 255, 0.14);
+        color: #fff;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+      }
+      .pager.on-dark button:hover:not(:disabled) {
+        background: var(--blue);
+        box-shadow: none;
+      }
+      .pager.on-dark button:focus-visible {
+        outline-color: #fff;
+      }
+      .help {
+        position: fixed;
+        left: 16px;
+        bottom: 12px;
+        color: #8aa0b8;
+        font-size: 13px;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <section class="slide dark is-active" data-label="Reference">
+        <div class="logo lg" role="img" aria-label="Vention"></div>
+        <div
+          class="grow"
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+          "
+        >
+          <p class="kicker">Reference</p>
+          <h1>Shift left to shift right</h1>
+          <p class="lead">
+            When, what, and who for cloud and for edge. Keep this deck beside
+            you. The room deck stays the short one.
+          </p>
+        </div>
+        <div class="foot">
+          <span>Two lines. Three moments each.</span><span class="count"></span>
+        </div>
+      </section>
+
+      <section class="slide" data-label="Cloud">
+        <p class="kicker">Cloud · two-week cycle</p>
+        <h2>Shift left on the pull request. Shift right after deploy.</h2>
+        <p class="sub">What is the check. Who runs it. When is the column.</p>
+        <div class="grow line">
+          <article class="col">
+            <p class="shift">Shift left</p>
+            <h3 class="when">Pre-merge and post-merge</h3>
+            <ul class="rows">
+              <li>
+                <span class="what">Unit</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what">Component</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what">Integration</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">Contract</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what"
+                  >Web vitals, lab<small>Pre-merge only</small></span
+                ><span class="who">Dev, QA</span>
+              </li>
+            </ul>
+          </article>
+          <article class="col">
+            <p class="shift">Before deploy</p>
+            <h3 class="when">Pre-deployment</h3>
+            <ul class="rows">
+              <li>
+                <span class="what"
+                  >UI and end-to-end<small>Also post-merge</small></span
+                ><span class="who">QA</span>
+              </li>
+              <li>
+                <span class="what">User journey</span
+                ><span class="who">QA</span>
+              </li>
+              <li>
+                <span class="what">Smoke</span><span class="who">QA, Dev</span>
+              </li>
+              <li>
+                <span class="what">System integration</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">System<small>Load and stability</small></span
+                ><span class="who">QA, SRE</span>
+              </li>
+              <li>
+                <span class="what"
+                  >Pen test<small>Also after deploy</small></span
+                ><span class="who">Security, SRE</span>
+              </li>
+            </ul>
+          </article>
+          <article class="col right">
+            <p class="shift">Shift right</p>
+            <h3 class="when">Post-deployment</h3>
+            <ul class="rows">
+              <li>
+                <span class="what"
+                  >Pen test<small>Also before deploy</small></span
+                ><span class="who">Security, SRE</span>
+              </li>
+              <li>
+                <span class="what">Smoke</span><span class="who">QA, Dev</span>
+              </li>
+              <li>
+                <span class="what">Synthetic traffic</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">Web vitals, field</span
+                ><span class="who">Dev, QA</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+        <div class="foot">
+          <span>Where: laptop and CI, then the cluster</span
+          ><span class="count"></span>
+        </div>
+      </section>
+
+      <section class="slide" data-label="Edge">
+        <p class="kicker">Edge · release candidate</p>
+        <h2>Shift left on the bench. Shift right is a watch.</h2>
+        <p class="sub">
+          Dev here is the controller stack. The factory does not qualify the
+          build.
+        </p>
+        <div class="grow line">
+          <article class="col">
+            <p class="shift">Shift left</p>
+            <h3 class="when">Pre-merge and post-merge</h3>
+            <ul class="rows">
+              <li>
+                <span class="what">Unit</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what">Component</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what">Integration</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">Contract</span><span class="who">Dev</span>
+              </li>
+              <li>
+                <span class="what">Configuration handoff</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">Certificate</span
+                ><span class="who">Dev, QA</span>
+              </li>
+              <li>
+                <span class="what">Emulator</span
+                ><span class="who">Dev, QA</span>
+              </li>
+            </ul>
+          </article>
+          <article class="col">
+            <p class="shift">The gate</p>
+            <h3 class="when">Release candidate</h3>
+            <ul class="rows">
+              <li>
+                <span class="what">Hardware-in-the-loop</span
+                ><span class="who">Dev, QA, Lab</span>
+              </li>
+              <li>
+                <span class="what">EtherCAT fault injection</span
+                ><span class="who">Dev, QA, Lab</span>
+              </li>
+              <li>
+                <span class="what">Soak, link loss</span
+                ><span class="who">QA, Lab</span>
+              </li>
+              <li>
+                <span class="what">Soak, memory leak</span
+                ><span class="who">QA, Lab</span>
+              </li>
+              <li>
+                <span class="what">Smoke</span
+                ><span class="who">QA, Dev, Delivery</span>
+              </li>
+              <li>
+                <span class="what">Staged update</span
+                ><span class="who">Dev, QA, Lab</span>
+              </li>
+              <li>
+                <span class="what">MachineMotion AI 3.x</span
+                ><span class="who">QA, Lab</span>
+              </li>
+            </ul>
+          </article>
+          <article class="col right solo">
+            <p class="shift">Shift right</p>
+            <h3 class="when">After ship</h3>
+            <ul class="rows">
+              <li>
+                <span class="what"
+                  >Fleet health<small
+                    >Once a controller can report version and link</small
+                  ></span
+                ><span class="who">SRE</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+        <div class="foot">
+          <span
+            >Where: bench and CI, then the lab. The factory is watch only.</span
+          ><span class="count"></span>
+        </div>
+      </section>
+
+      <nav class="pager" aria-label="Slides">
+        <button type="button" id="prev" aria-label="Previous slide">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M14.5 6.5 9 12l5.5 5.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <button type="button" id="next" aria-label="Next slide">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9.5 6.5 15 12l-5.5 5.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </nav>
+    </div>
+    <p class="help">Reference deck. Arrow keys move. F for full screen.</p>
+    <script>
+      const stage = document.getElementById('stage');
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const pager = document.querySelector('.pager');
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      let index = 0;
+
+      function fit() {
+        const scale = Math.min(
+          window.innerWidth / 1600,
+          window.innerHeight / 900,
+        );
+        stage.style.transform = 'scale(' + scale + ')';
+        stage.style.left = (window.innerWidth - 1600 * scale) / 2 + 'px';
+        stage.style.top = (window.innerHeight - 900 * scale) / 2 + 'px';
+        const help = document.querySelector('.help');
+        if (help) help.hidden = window.innerHeight - 900 * scale < 28;
+      }
+
+      function show(nextIndex) {
+        index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+        slides.forEach((slide, i) => {
+          const on = i === index;
+          slide.classList.toggle('is-active', on);
+          slide.setAttribute('aria-hidden', on ? 'false' : 'true');
+          const count = slide.querySelector('.count');
+          if (count)
+            count.textContent =
+              String(i + 1).padStart(2, '0') +
+              '  /  ' +
+              String(slides.length).padStart(2, '0');
+        });
+        const label = slides[index].dataset.label || '';
+        document.title = label + ' — Shift left, shift right';
+        history.replaceState(null, '', '#' + (index + 1));
+        prev.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        pager.classList.toggle(
+          'on-dark',
+          slides[index].classList.contains('dark'),
+        );
+      }
+
+      function fromHash() {
+        const n = Number(location.hash.replace('#', ''));
+        show(Number.isFinite(n) && n > 0 ? n - 1 : 0);
+      }
+
+      prev.addEventListener('click', (event) => {
+        event.stopPropagation();
+        show(index - 1);
+      });
+      next.addEventListener('click', (event) => {
+        event.stopPropagation();
+        show(index + 1);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        const key = event.key;
+        if (
+          event.target.closest &&
+          event.target.closest('.pager') &&
+          (key === ' ' || key === 'Enter')
+        )
+          return;
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(key)) {
+          event.preventDefault();
+          show(index + 1);
+        } else if (
+          ['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(key)
+        ) {
+          event.preventDefault();
+          show(index - 1);
+        } else if (key === 'Home') {
+          show(0);
+        } else if (key === 'End') {
+          show(slides.length - 1);
+        } else if (key === 'f' || key === 'F') {
+          if (!document.fullscreenElement)
+            document.documentElement.requestFullscreen();
+          else document.exitFullscreen();
+        }
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target.closest('a, button')) return;
+        const x = event.clientX / window.innerWidth;
+        if (x > 0.78) show(index + 1);
+        else if (x < 0.22) show(index - 1);
+      });
+
+      window.addEventListener('resize', fit);
+      window.addEventListener('hashchange', fromHash);
+      fit();
+      fromHash();
+    </script>
+  </body>
+</html>
