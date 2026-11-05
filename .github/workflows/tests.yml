@@ -129,13 +129,32 @@ jobs:
           path: allure-report/
           retention-days: 14
 
+      - name: Stage Allure site
+        if: ${{ !cancelled() && steps.allure.outputs.generated == 'true' }}
+        run: |
+          mkdir -p "gh-pages-site/${GITHUB_RUN_ID}"
+          cp -a allure-report/. "gh-pages-site/${GITHUB_RUN_ID}/"
+          # Relative target. A leading slash would leave the /platform-qa/ project site.
+          cat > gh-pages-site/index.html <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=${GITHUB_RUN_ID}/">
+            <title>Allure report</title>
+          </head>
+          <body>
+            <p><a href="${GITHUB_RUN_ID}/">Allure report</a></p>
+          </body>
+          </html>
+          EOF
+
       - name: Publish Allure report
         if: ${{ !cancelled() && steps.allure.outputs.generated == 'true' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          destination_dir: ${{ github.run_id }}
+          publish_dir: ./gh-pages-site
           keep_files: true
           enable_jekyll: false
 
